@@ -84,10 +84,10 @@ plt.legend()
 plt.show()
 
 
-x_test, x_train, y_test, y_train = train_test_split(x,y, test_size=0.2, random_state=20) 
+x_train, x_test, y_train, y_test = train_test_split(x,y, test_size=0.2, random_state=20) 
 
 model = LinearRegression()
-model.fit(x,y)
+model.fit(x_train,y_train)
 y_pred = model.predict(x_test)
 
 
@@ -100,6 +100,26 @@ print("MSE: ", mse)
 
 print("Coefficients: ", model.coef_)
 print("Intercept: ", model.intercept_)
+print(y_test.values[:5])
+print(y_pred[:5])
+
+results = pd.DataFrame({"Actual Heating Load": y_test.values, "Predicted Heating Load": y_pred})
+results["Absolute Error"] = abs(results["Actual Heating Load"] - results["Predicted Heating Load"])
+
+
+results.head()
+results.sort_values(by="Absolute Error", ascending=False).head()
+
+results.to_excel("E:/Semesters/4th Semester/AI/Labs/AI-Driven Buildings Energy Efficiency Analysis & Prediction/report/heating_load_prediction.xlsx", index=False)
+
+coef_df = pd.DataFrame({
+    "Feature": x.columns,
+    "Coefficient": model.coef_
+})
+
+print(coef_df)
+
+coef_df.to_excel("E:/Semesters/4th Semester/AI/Labs/AI-Driven Buildings Energy Efficiency Analysis & Prediction/report/learned_coefficients.xlsx", index=False)
 
 
 
